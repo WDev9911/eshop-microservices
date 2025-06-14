@@ -1,0 +1,53 @@
+﻿// Thư viện không cần thiết ở đây (System.Windows.Input dùng cho WPF) → nên xóa nếu không dùng
+using System.Windows.Input;
+
+// Import CQRS interface định nghĩa ICommand và ICommandHandler từ BuildingBlocks
+using BuildingBlocks.CQRS;
+
+// Import model Product từ thư mục Models
+using Catalog.API.Models;
+
+// Thư viện MediatR để xử lý các Command và Query theo kiểu trung gian
+using MediatR;
+
+// Namespace chứa slice CreateProduct của Catalog.API
+namespace Catalog.API.Products.CreateProduct;
+
+// Định nghĩa Command được gửi từ handler (qua MediatR)
+// Đây là lệnh tạo sản phẩm mới, chứa thông tin mà client gửi lên
+public record CreateProductCommand(
+    string Name,
+    List<string> Category,
+    string Description,
+    string ImageFile,
+    decimal Price
+) : ICommand<CreateProductResult>;  // Kế thừa interface ICommand trả về CreateProductResult
+
+// Định nghĩa kết quả sau khi tạo sản phẩm thành công — chỉ chứa Id của sản phẩm mới
+public record CreateProductResult(Guid Id);
+
+// Handler xử lý Command CreateProductCommand và trả về CreateProductResult
+internal class CreateProductCommandHandler(IDocumentSession session)
+    : ICommandHandler<CreateProductCommand, CreateProductResult>
+{
+    // Phương thức chính để xử lý command được gửi đến
+    public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
+    {
+        // Tạo đối tượng Product mới từ thông tin trong command
+        var product = new Product
+        {
+            Name = command.Name,
+            Category = command.Category,
+            Description = command.Description,
+            ImageFile = command.ImageFile,
+            Price = command.Price,
+        };
+
+        // 🔧 TODO: Sau này nên thêm logic lưu vào database ở đây
+        session.Store(product);
+        await session.SaveChangesAsync(cancellationToken);
+
+        // Trả về kết quả với Id mới sinh ngẫu nhiên (tạm thời, chưa lưu vào DB)
+        return new CreateProductResult(Guid.NewGuid());
+    }
+}
