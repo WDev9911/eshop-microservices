@@ -1,16 +1,4 @@
-﻿// Thư viện không cần thiết ở đây (System.Windows.Input dùng cho WPF) → nên xóa nếu không dùng
-using System.Windows.Input;
-
-// Import CQRS interface định nghĩa ICommand và ICommandHandler từ BuildingBlocks
-using BuildingBlocks.CQRS;
-
-// Import model Product từ thư mục Models
-using Catalog.API.Models;
-
-// Thư viện MediatR để xử lý các Command và Query theo kiểu trung gian
-using MediatR;
-
-// Namespace chứa slice CreateProduct của Catalog.API
+﻿// Namespace chứa slice CreateProduct của Catalog.API
 namespace Catalog.API.Products.CreateProduct;
 
 // Định nghĩa Command được gửi từ handler (qua MediatR)

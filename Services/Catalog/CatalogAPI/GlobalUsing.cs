@@ -12,3 +12,7 @@ global using MediatR;
 // ➤ MediatR dùng để triển khai kiến trúc CQRS (Command & Query Responsibility Segregation)
 // ➤ Với global using, bạn có thể viết `sender.Send(...)` hay `IRequest<T>` ở bất kỳ file nào mà không cần import lại
 global using Marten;
+
+
+global using BuildingBlocks.CQRS;
+global using Catalog.API.Models;
