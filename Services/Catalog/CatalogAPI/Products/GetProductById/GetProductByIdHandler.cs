@@ -1,5 +1,4 @@
-﻿
-namespace Catalog.API.Products.GetProductById;
+﻿namespace Catalog.API.Products.GetProductById;
 
 public record GetProductByIdQuery(Guid Id) : IQuery<GetProductByIdResult>;
 
@@ -14,9 +13,9 @@ internal class GetProductByIdQueryHandler (IDocumentSession session, ILogger<Get
 
         var product = await session.LoadAsync<Product>(query.Id, cancellationToken);
 
-        if (product == null)
+        if (product is null)
         {
-            throw new KeyNotFoundException($"Product with Id {query.Id} not found");
+            throw new ProductNotFoundException();
         }
         return new GetProductByIdResult(product);
     }
