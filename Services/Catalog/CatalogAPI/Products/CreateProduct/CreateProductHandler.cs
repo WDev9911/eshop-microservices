@@ -1,4 +1,6 @@
 ﻿// Namespace chứa slice CreateProduct của Catalog.API
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace Catalog.API.Products.CreateProduct;
 
 // Định nghĩa Command được gửi từ handler (qua MediatR)
@@ -14,13 +16,29 @@ public record CreateProductCommand(
 // Định nghĩa kết quả sau khi tạo sản phẩm thành công — chỉ chứa Id của sản phẩm mới
 public record CreateProductResult(Guid Id);
 
+//
+
+public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
+{
+    public CreateProductCommandValidator()
+    {
+        RuleFor(x => x.Name).NotEmpty().WithMessage("Product name is required!");
+        RuleFor(x => x.Category).NotEmpty().WithMessage("Product category is required!");
+        RuleFor(x => x.ImageFile).NotEmpty().WithMessage("Product imageFile is required!");
+        RuleFor(x => x.Price).GreaterThan(0).WithMessage("Product Price must be greater than 0!");
+    }
+}
+
 // Handler xử lý Command CreateProductCommand và trả về CreateProductResult
-internal class CreateProductCommandHandler(IDocumentSession session)
+internal class CreateProductCommandHandler(IDocumentSession session, ILogger<CreateProductCommandHandler> logger)
     : ICommandHandler<CreateProductCommand, CreateProductResult>
 {
     // Phương thức chính để xử lý command được gửi đến
     public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
+        logger.LogInformation("CreateProductCommandHandler.Handle called with {@Command}", command);
+
+
         // Tạo đối tượng Product mới từ thông tin trong command
         var product = new Product
         {
