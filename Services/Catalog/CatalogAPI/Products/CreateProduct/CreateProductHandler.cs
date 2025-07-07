@@ -30,13 +30,13 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
 }
 
 // Handler xử lý Command CreateProductCommand và trả về CreateProductResult
-internal class CreateProductCommandHandler(IDocumentSession session, ILogger<CreateProductCommandHandler> logger)
+internal class CreateProductCommandHandler(IDocumentSession session)
     : ICommandHandler<CreateProductCommand, CreateProductResult>
 {
     // Phương thức chính để xử lý command được gửi đến
     public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("CreateProductCommandHandler.Handle called with {@Command}", command);
+  
 
 
         // Tạo đối tượng Product mới từ thông tin trong command
